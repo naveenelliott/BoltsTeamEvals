@@ -206,7 +206,7 @@ weekly_report['Unique Identifier'] = weekly_report['Team Name'] + ' ' + weekly_r
 weekly_report = weekly_report[weekly_report['Unique Identifier'].isin(actions['Unique Identifier'])]
 
 
-folder_path = 'PostMatchReviewApp_v3/xG Input Files'
+folder_path = 'xG Input Files'
 
 # Find all CSV files in the folder
 csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
