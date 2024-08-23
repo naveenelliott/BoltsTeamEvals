@@ -2,11 +2,9 @@ import pandas as pd
 import streamlit as st
 import glob
 import os
-from PIL import Image
-from mplsoccer import PyPizza, add_image, FontManager
+from mplsoccer import PyPizza,
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from matplotlib.font_manager import FontProperties
 from GettingTimeUntilRegain import formattingFileForRegain
 from xGModel import xGModel
