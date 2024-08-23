@@ -88,7 +88,7 @@ font_bold = FontProperties(fname=font_path)
 font_path = 'CookbookNormalRegular-6YmjD.ttf'
 cook = FontProperties(fname=font_path)
 
-image_path = 'BostonBoltsLogo.png'  # Replace with the actual path to your image
+image_path = 'Boston_Bolts.png'  # Replace with the actual path to your image
 image = plt.imread(image_path)
 
 font_path = 'WorkSans-Bold.ttf'
