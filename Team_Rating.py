@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import glob
 import os
-from mplsoccer import PyPizza,
+from mplsoccer import PyPizza
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from matplotlib.font_manager import FontProperties
