@@ -124,7 +124,7 @@ stds = {
     'Chance Created': std_chance_created
 }
 
-folder_path = 'BoltsTeamRatingApp/Actions PSD'
+folder_path = 'Actions PSD'
 
 # Find all CSV files in the folder
 csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
@@ -148,7 +148,7 @@ actions.loc[actions['Opposition'] == 'St Louis', 'Match Date'] = '12/09/2023'
 
 actions['Unique Identifier'] = actions['Team'] + ' ' + actions['Opposition'] + ' ' + actions['Match Date']
 
-folder_path = 'BoltsTeamRatingApp/WeeklyReport PSD'
+folder_path = 'WeeklyReport PSD'
 
 # Find all CSV files in the folder
 csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
@@ -280,7 +280,7 @@ combined_xg = pd.merge(fc_python, xg_actions, on=['Bolts Team', 'Match Date', 'T
 xg = xGModel(combined_xg)
 
 # Convert the image to base64
-logo_image = "BoltsTeamRatingApp/Boston_Bolts.png"
+logo_image = "Boston_Bolts.png"
 
 # Inject CSS and HTML for title and logo
 def get_image_base64(image_path):
@@ -288,7 +288,7 @@ def get_image_base64(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 # Convert the image to base64
-image_base64 = get_image_base64("BoltsTeamRatingApp/Boston_Bolts.png")
+image_base64 = get_image_base64("Boston_Bolts.png")
 
 # Inject CSS and HTML for title and logo
 st.markdown(
