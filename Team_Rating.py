@@ -13,7 +13,7 @@ import numpy as np
 
 st.set_page_config(
     page_title="Bolts Team Rating App",
-    page_icon='Boston_Bolts.png',
+    page_icon='SoccerCoach.jpg',
     layout="centered",
 )
 
