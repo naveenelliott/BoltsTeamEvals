@@ -51,28 +51,28 @@ st.markdown(
 )
 
 
-mean_18 = 14.3959
-std_18 = 7.4696
-mean_forward = 84
-std_forward = 8
+mean_18 = 14.4785
+std_18 = 3.1594
+mean_forward = 72.7022
+std_forward = 3.4743
 xg_per_shot_bolts_avg = 0.255
 xg_per_shot_bolts_std = 0.06021
 xg_per_shot_opp = 0.25
 xg_per_shot_opp_std = 0.05
-pass_average = 80
-pass_std = 3.43
+pass_average = 80.6256
+pass_std = 2.879
 regain_average = 25
 regain_std = 4
-mean_progr_regain = 73.7732
-std_progr_regain = 8.4211
-mean_total_pass = 431.9062
-std_total_pass = 78.6453
-mean_linebreaks = 30.8152
-std_linebreaks = 21.7456
-mean_progr_att = 63.6059
-std_progr_att = 4.2317
-mean_ppm = 0.4363
-std_ppm = 0.0794
+mean_progr_regain = 74.0805
+std_progr_regain = 3.8596
+mean_total_pass = 429.0984
+std_total_pass = 34.4815
+mean_linebreaks = 30.7793
+std_linebreaks = 10.9468
+mean_progr_att = 63.6586
+std_progr_att = 2.2294
+mean_ppm = 0.43428
+std_ppm = 0.033873
 
 # need to get an actual average and standard deviation here
 mean_chance_created = 12.94
