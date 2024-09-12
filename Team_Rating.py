@@ -322,6 +322,7 @@ st.markdown("Select the Team, Opponent, and Date to view the team ranking. Team 
 
 # Selecting the Bolts team
 st.write(weekly_report)
+weekly_report = weekly_report.dropna(subset=['Team Name').reset_index(drop=True)
 teams = sorted(list(weekly_report['Team Name'].unique()))
 selected_team = st.session_state.get('selected_team', teams[0])
 if selected_team not in teams:
