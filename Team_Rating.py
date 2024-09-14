@@ -369,6 +369,7 @@ overall_xg.rename(columns={'Bolts Team': 'Team'}, inplace=True)
 end['xG per Shot'] = overall_xg['Bolts_xG']/overall_xg['Bolts_Count']
 end['Opp xG per Shot'] = overall_xg['Opp_xG']/overall_xg['Opp_Count']
 
+"""
 time_of_poss_list = []
 time_until_regain_list = []
 
@@ -399,9 +400,12 @@ time_until_regain = np.mean(time_until_regain_list)
 
 
 end['Time Until Regain'] = time_until_regain
+"""
 
-
-new_order = ['Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
+#new_order = ['Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
+#'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
+#'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created']
+new_order = ['Opp xG per Shot', 'Progr Regain ',
 'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
 'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created']
 end = end[new_order]
@@ -418,11 +422,16 @@ for col in end.columns:
 
 
 end['Opp xG per Shot'] = 100 - end['Opp xG per Shot']
-end['Time Until Regain'] = 100 - end['Time Until Regain']
+#end['Time Until Regain'] = 100 - end['Time Until Regain']
 
 # parameter list
+#params = [
+#    'Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
+#    'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
+#    'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
+#]
 params = [
-    'Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
+    'Opp xG per Shot', 'Progr Regain ',
     'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
     'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
 ]
@@ -431,8 +440,8 @@ params = [
 values = [int(end[col]) for col in params]
 
 # color for the slices and text
-slice_colors = ['gray'] * 3 + ["#6bb2e2"] * 3 + ["#263a6a"] * 3 + ['black'] * 3 
-text_colors =  ["#F2F2F2"] * 3 + ["#000000"] * 3 + ["#F2F2F2"] * 3 + ['#F2F2F2'] * 3
+slice_colors = ['gray'] * 2 + ["#6bb2e2"] * 3 + ["#263a6a"] * 3 + ['black'] * 3 
+text_colors =  ["#F2F2F2"] * 2 + ["#000000"] * 3 + ["#F2F2F2"] * 3 + ['#F2F2F2'] * 3
 
 # instantiate PyPizza class
 baker = PyPizza(
