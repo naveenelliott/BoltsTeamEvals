@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import glob
 import os
-from mplsoccer import PyPizza
+from mplsoccer import Radar
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from matplotlib.font_manager import FontProperties
@@ -10,6 +10,7 @@ from GettingTimeUntilRegain import formattingFileForRegain
 from xGModel import xGModel
 import base64
 import numpy as np
+from calculateTeamRating import calculatingTeamRating
 
 st.set_page_config(
     page_title="Bolts Team Rating App",
@@ -50,34 +51,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-mean_18 = 14.4785
-std_18 = 3.1594
-mean_forward = 72.7022
-std_forward = 3.4743
-xg_per_shot_bolts_avg = 0.255
-xg_per_shot_bolts_std = 0.06021
-xg_per_shot_opp = 0.25
-xg_per_shot_opp_std = 0.05
-pass_average = 80.6256
-pass_std = 2.879
-regain_average = 25
-regain_std = 4
-mean_progr_regain = 74.0805
-std_progr_regain = 3.8596
-mean_total_pass = 429.0984
-std_total_pass = 34.4815
-mean_linebreaks = 30.7793
-std_linebreaks = 10.9468
-mean_progr_att = 63.6586
-std_progr_att = 2.2294
-mean_ppm = 0.43428
-std_ppm = 0.033873
-
-# need to get an actual average and standard deviation here
-mean_chance_created = 12.94
-std_chance_created = 3
-
 font_path = 'Roboto-Regular.ttf'
 font_normal = FontProperties(fname=font_path)
 font_path = 'Roboto-Italic.ttf'
@@ -93,36 +66,6 @@ image = plt.imread(image_path)
 
 font_path = 'WorkSans-Bold.ttf'
 work_sans = FontProperties(fname=font_path)
-
-means = {
-    'Opp xG per Shot': xg_per_shot_opp,
-    'Time Until Regain': regain_average,
-    'Progr Regain ': mean_progr_regain,
-    'Progr Pass Completion ': pass_average,
-    'Total Passes': mean_total_pass,
-    'Pass Completion ': pass_average,
-    'Passes per Min': mean_ppm,
-    'Progr Pass Attempt ': mean_progr_att,
-    'Line Break': mean_linebreaks,
-    'Pass into Oppo Box': mean_18,
-    'xG per Shot': xg_per_shot_bolts_avg,
-    'Chance Created': mean_chance_created
-}
-
-stds = {
-    'Opp xG per Shot': xg_per_shot_opp_std,
-    'Time Until Regain': regain_std,
-    'Progr Regain ': std_progr_regain,
-    'Progr Pass Completion ': pass_std,
-    'Total Passes': std_total_pass,
-    'Pass Completion ': pass_std,
-    'Passes per Min': std_ppm,
-    'Progr Pass Attempt ': std_progr_att,
-    'Line Break': std_linebreaks,
-    'Pass into Oppo Box': std_18,
-    'xG per Shot': xg_per_shot_bolts_std,
-    'Chance Created': std_chance_created
-}
 
 folder_path = 'Actions PSD'
 
@@ -315,202 +258,129 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-st.markdown("Select the Team, Opponent, and Date to view the team ranking. Team percentiles are compared with all teams in the club")
+st.markdown("Select the Team to view the team ranking. Team percentiles are compared with all teams in the club")
 
 
+our_columns = st.columns(3)
 
+with our_columns[0]:
+    # Selecting the Bolts team
+    weekly_report = weekly_report.dropna(subset=['Team Name']).reset_index(drop=True)
+    teams = sorted(list(weekly_report['Team Name'].unique()))
+    selected_team = st.session_state.get('selected_team', teams[0])
+    if selected_team not in teams:
+        selected_team = teams[0]  # Default to the first date if not found
 
-# Selecting the Bolts team
-weekly_report = weekly_report.dropna(subset=['Team Name']).reset_index(drop=True)
-teams = sorted(list(weekly_report['Team Name'].unique()))
-selected_team = st.session_state.get('selected_team', teams[0])
-if selected_team not in teams:
-    selected_team = teams[0]  # Default to the first date if not found
+    selected_team = st.selectbox('Choose the Team (Black):', teams, index=teams.index(selected_team))
+    team = selected_team
 
-selected_team = st.selectbox('Choose the Team:', teams, index=teams.index(selected_team))
-st.session_state['selected_team'] = selected_team
+values = calculatingTeamRating(team, weekly_report, actions, xg)
 
-# Filtering based on the selected team
-weekly_report = weekly_report.loc[weekly_report['Team Name'] == st.session_state['selected_team']]
-actions = actions.loc[actions['Team'] == st.session_state['selected_team']]
-xg = xg.loc[xg['Bolts Team'] == st.session_state['selected_team']]
-
-weekly_report.drop(columns=['Team Name', 'Opposition', 'Match Date', 'Unique Identifier'], inplace=True)
-
-average_row = weekly_report.mean()
-
-# Optionally, give this row a name (e.g., 'Average')
-average_row['Team Name'] = 'Average'
-
-# Create a new DataFrame with just this row
-weekly_report = pd.DataFrame([average_row])
-
-
-end = weekly_report.copy()
-
-end.reset_index(drop=True, inplace=True)
-
-bolts_df = xg[xg['Team'].str.contains('Bolts')]
-opp_df = xg[~xg['Team'].str.contains('Bolts')]
-
-# Group by the desired columns and aggregate
-bolts_agg = bolts_df.groupby(['Bolts Team', 'Match Date', 'Opposition']).agg(
-    Bolts_xG=('xG', 'sum'),
-    Bolts_Count=('xG', 'size')
-).reset_index()
-
-opp_agg = opp_df.groupby(['Bolts Team', 'Match Date', 'Opposition']).agg(
-    Opp_xG=('xG', 'sum'),
-    Opp_Count=('xG', 'size')
-).reset_index()
-
-overall_xg = pd.merge(bolts_agg, opp_agg, on=['Bolts Team', 'Match Date', 'Opposition'], how='outer')
-overall_xg.rename(columns={'Bolts Team': 'Team'}, inplace=True)
-end['xG per Shot'] = overall_xg['Bolts_xG']/overall_xg['Bolts_Count']
-end['Opp xG per Shot'] = overall_xg['Opp_xG']/overall_xg['Opp_Count']
-
-_ = """
-time_of_poss_list = []
-time_until_regain_list = []
-
-# Get unique combinations of 'Team', 'Match Date', and 'Opposition'
-unique_combinations = actions[['Team', 'Match Date', 'Opposition']].drop_duplicates()
-
-# Iterate over each unique combination
-for _, row in unique_combinations.iterrows():
-    team = row['Team']
-    match_date = row['Match Date']
-    opposition = row['Opposition']
-    
-    # Filter the DataFrame for the current combination
-    filtered_actions = actions[(actions['Team'] == team) & 
-                               (actions['Match Date'] == match_date) & 
-                               (actions['Opposition'] == opposition)]
-    filtered_actions.reset_index(drop=True, inplace=True)
-    
-    # Run your custom function
-    time_of_poss, time_until_regain = formattingFileForRegain(filtered_actions)
-    
-    # Append results to the lists
-    time_of_poss_list.append(time_of_poss)
-    time_until_regain_list.append(time_until_regain)
-
-# Calculate the mean of time until regain
-time_until_regain = np.mean(time_until_regain_list)
-
-
-end['Time Until Regain'] = time_until_regain
-"""
-
-#new_order = ['Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
-#'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
-#'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created']
-new_order = ['Opp xG per Shot', 'Progr Regain ',
-'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
-'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created']
-end = end[new_order]
-
-# Apply the conversion to percentiles
-for col in end.columns:
-    if col in means and col in stds:
-        mean = means[col]
-        std = stds[col]
-        end[col] = norm.cdf(end[col], loc=mean, scale=std) * 100
+with our_columns[1]:
+    # Add a 'None' option to the list of teams
+    if selected_team in teams:
+        team_options = ['None'] + [team for team in teams if team != selected_team]
     else:
-        # General percentile rank if no specific distribution is known
-        end[col] = end[col].rank(pct=True) * 100
+        team_options = ['None'] + teams
+    # Create a selectbox with the updated options
+    selected_team_2 = st.selectbox('Choose the 1st Comp Team (White):', team_options)
 
+if selected_team_2 != 'None':
+  other_values = calculatingTeamRating(selected_team_2, weekly_report, actions, xg)
 
-end['Opp xG per Shot'] = 100 - end['Opp xG per Shot']
-#end['Time Until Regain'] = 100 - end['Time Until Regain']
+with our_columns[2]:
+    team_options_2 = [team for team in teams if team != selected_team]
+    # Ensure selected_team_2 is not in the list of options
+    team_options_2 = [team for team in team_options_2 if team != selected_team_2]
+    team_options_2 = ['None'] + team_options_2
+    # Create a selectbox with the updated options
+    selected_team_3 = st.selectbox('Choose the 2nd Comp Team (Blue):', team_options_2)
 
-# parameter list
-#params = [
-#    'Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
-#    'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
-#    'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
-#]
+if selected_team_3 != 'None':
+  final_values = calculatingTeamRating(selected_team_3, weekly_report, actions, xg)
+
 params = [
     'Opp xG per Shot', 'Progr Regain ',
     'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
     'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
 ]
 
-# value list
-values = [int(end[col]) for col in params]
 
-# color for the slices and text
-slice_colors = ['gray'] * 2 + ["#6bb2e2"] * 3 + ["#263a6a"] * 3 + ['black'] * 3 
-text_colors =  ["#F2F2F2"] * 2 + ["#000000"] * 3 + ["#F2F2F2"] * 3 + ['#F2F2F2'] * 3
+low = [0] * len(params)
+high = [100] * len(params)
 
-# instantiate PyPizza class
-baker = PyPizza(
-    params=params,                  # list of parameters
-    background_color="#EBEBE9",     # background color
-    straight_line_color="#EBEBE9",  # color for straight lines
-    straight_line_lw=1,             # linewidth for straight lines
-    last_circle_lw=0,               # linewidth of last circle
-    other_circle_lw=0,              # linewidth for other circles
-    inner_circle_size=10            # size of inner circle
-)
 
-# plot pizza
-fig, ax = baker.make_pizza(
-    values,                          # list of values
-    figsize=(8, 8.5),                # adjust figsize according to your need
-    color_blank_space="same",        # use same color to fill blank space
-    slice_colors=slice_colors,       # color for individual slices
-    value_colors=text_colors,        # color for the value-text
-    value_bck_colors=slice_colors,   # color for the blank spaces
-    blank_alpha=0.4,                 # alpha for blank-space colors
-    kwargs_slices=dict(
-        edgecolor="#F2F2F2", zorder=2, linewidth=1
-    ),                               # values to be used when plotting slices
-    kwargs_params=dict(
-        color="#000000", fontsize=12.5,
-        fontproperties=font_normal, va="center"
-    ),                               # values to be used when adding parameter
-    kwargs_values=dict(
-        color="#000000", fontsize=11,
-        fontproperties=font_normal, zorder=3,
-        bbox=dict(
-            edgecolor="#000000", facecolor="cornflowerblue",
-            boxstyle="round,pad=0.2", lw=1
-        )
-    )                                # values to be used when adding parameter-values
-)
+radar = Radar(params, low, high,
+              # whether to round any of the labels to integers instead of decimal places
+              round_int=[True]*len(params),
+              num_rings=4,  # the number of concentric circles (excluding center circle)
+              # if the ring_width is more than the center_circle_radius then
+              # the center circle radius will be wider than the width of the concentric circles
+              ring_width=1, center_circle_radius=1)
 
-for i, (text, color) in enumerate(zip(ax.texts[:len(params)], slice_colors)):
-    text.set_color(color)
+fig, ax = radar.setup_axis()
+rings_inner = radar.draw_circles(ax=ax, facecolor='lightgray', edgecolor='black')
+
+radar1, vertices1 = radar.draw_radar_solid(values, ax=ax,
+                                           kwargs={'facecolor': 'black',
+                                                   'alpha': 0.6,
+                                                   'edgecolor': 'black',
+                                                   'lw': 2})
+
+ax.scatter(vertices1[:, 0], vertices1[:, 1],
+           c='black', edgecolors='black', marker='o', s=100, zorder=2)
+
+if selected_team_2 != 'None':
+    radar1, vertices1 = radar.draw_radar_solid(other_values, ax=ax,
+                                           kwargs={'facecolor': 'white',
+                                                   'alpha': 0.7,
+                                                   'edgecolor': 'black',
+                                                   'lw': 2})
+
+    ax.scatter(vertices1[:, 0], vertices1[:, 1],
+           c='white', edgecolors='black', marker='o', s=100, zorder=2)
+    
+if selected_team_3 != 'None':
+    radar1, vertices1 = radar.draw_radar_solid(final_values, ax=ax,
+                                           kwargs={'facecolor': 'lightblue',
+                                                   'alpha': 0.7,
+                                                   'edgecolor': 'black',
+                                                   'lw': 2})
+
+    ax.scatter(vertices1[:, 0], vertices1[:, 1],
+           c='lightblue', edgecolors='black', marker='o', s=100, zorder=2)
+
+range_labels = radar.draw_range_labels(ax=ax, fontsize=15)
+param_labels = radar.draw_param_labels(ax=ax, fontsize=17)
 
 
 
 fig.text(
     0.85, 0.85,
     "Defending",
-    size=16,
-    ha="center", fontproperties=font_bold, color="gray"
+    size=25,
+    ha="center", fontproperties=font_bold, color="black"
 )
 
 fig.text(
     0.875, 0.15,
     "Possession",
-    size=16,
-    ha="center", fontproperties=font_bold, color="#6bb2e2"
+    size=25,
+    ha="center", fontproperties=font_bold, color="black"
 )
 
 fig.text(
     0.175, 0.15,
     "Progression",
-    size=16,
-    ha="center", fontproperties=font_bold, color="#263a6a"
+    size=25,
+    ha="center", fontproperties=font_bold, color="black"
 )
 
 
 fig.text(
     0.175, 0.85,
     "Attacking",
-    size=16,
+    size=25,
     ha="center", fontproperties=font_bold, color="black"
 )
 
@@ -521,3 +391,4 @@ plt.gca().set_facecolor('#faf0e6')
 fig.set_dpi(600)
 
 st.pyplot(fig)
+
