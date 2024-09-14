@@ -369,7 +369,7 @@ overall_xg.rename(columns={'Bolts Team': 'Team'}, inplace=True)
 end['xG per Shot'] = overall_xg['Bolts_xG']/overall_xg['Bolts_Count']
 end['Opp xG per Shot'] = overall_xg['Opp_xG']/overall_xg['Opp_Count']
 
-"""
+_ = """
 time_of_poss_list = []
 time_until_regain_list = []
 
