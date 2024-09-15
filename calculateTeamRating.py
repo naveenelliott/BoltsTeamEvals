@@ -24,6 +24,8 @@ mean_progr_att = 63.6586
 std_progr_att = 2.2294
 mean_ppm = 0.43428
 std_ppm = 0.033873
+mean_da = 2.8864
+std_da = 0.9255
 
 # need to get an actual average and standard deviation here
 mean_chance_created = 12.94
@@ -80,6 +82,7 @@ def calculatingTeamRating(team, weekly_report, actions, xg):
     end = weekly_report.copy()
 
     end.reset_index(drop=True, inplace=True)
+    st.write(end)
 
     bolts_df = xg[xg['Team'].str.contains('Bolts')]
     opp_df = xg[~xg['Team'].str.contains('Bolts')]
