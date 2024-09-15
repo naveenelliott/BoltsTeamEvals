@@ -136,10 +136,12 @@ def calculatingTeamRating(team, weekly_report, actions, xg):
     end['Time Until Regain'] = time_until_regain
     """
 
+    end['Def Actions (Poss Adj)'] = end['Total Passes']/end['TDA']
+
     #new_order = ['Opp xG per Shot', 'Time Until Regain', 'Progr Regain ',
     #'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
     #'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created']
-    new_order = ['Opp xG per Shot', 'Progr Regain ',
+    new_order = ['Opp xG per Shot', 'Def Actions (Poss Adj)', 'Progr Regain ',
     'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
     'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created']
     end = end[new_order]
@@ -165,7 +167,7 @@ def calculatingTeamRating(team, weekly_report, actions, xg):
     #    'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
     #]
     params = [
-        'Opp xG per Shot', 'Progr Regain ',
+        'Opp xG per Shot', 'Progr Regain ', 'Def Actions (Poss Adj)'
         'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
         'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
     ]
