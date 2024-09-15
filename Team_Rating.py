@@ -118,7 +118,7 @@ for file in csv_files:
     'Line Break', 'mins played', 'Chance Created', 'Team Name', 'Opposition', 'Match Date', 'Opp Effort on Goal'
     ]
     float_columns = [
-    'Pass into Oppo Box', 'Progr Regain ', 'Progr Inter', 'Unprogr Inter', 
+    'Pass into Oppo Box', 'Progr Regain ', 'Progr Inter', 'Unprogr Inter', 'Progr Rec', 'Unprogr Rec', 
     'Stand. Tackle', 'Unsucc Stand. Tackle', 'Tackle', 'Unsucc Tackle',
     'Progr Pass Completion ', 'Success', 'Unsuccess', 'Pass Completion ', 'Progr Pass Attempt ', 
     'Line Break', 'mins played', 'Chance Created',  'Opp Effort on Goal'
