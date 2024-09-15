@@ -139,7 +139,9 @@ for file in csv_files:
     for col in per90:
         df[col] = df.apply(lambda row: (row[col] / row['mins played'] * 990) if row['mins played'] > 0 else 0, axis=1)
 
-    df.drop(columns=['Success', 'Unsuccess', 'mins played'], inplace=True)
+    df.drop(columns=['Success', 'Unsuccess', 'mins played', 
+                    'Progr Inter', 'Unprogr Inter', 'Progr Rec', 'Unprogr Rec', 'Stand. Tackle', 
+                     'Unsucc Stand. Tackle', 'Tackle', 'Unsucc Tackle'], inplace=True)
     df['Match Date'] = pd.to_datetime(df['Match Date']).dt.strftime('%m/%d/%Y')
     df_list.append(df)
 
