@@ -82,7 +82,6 @@ def calculatingTeamRating(team, weekly_report, actions, xg):
     end = weekly_report.copy()
 
     end.reset_index(drop=True, inplace=True)
-    st.write(end)
 
     bolts_df = xg[xg['Team'].str.contains('Bolts')]
     opp_df = xg[~xg['Team'].str.contains('Bolts')]
