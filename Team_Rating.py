@@ -134,7 +134,7 @@ for file in csv_files:
 
     df['Passes per Min'] = df['Total Passes']/df['mins played']
 
-    per90 = ['Pass into Oppo Box', 'Total Passes', 'Line Break', 'Chance Created']
+    per90 = ['Pass into Oppo Box', 'Total Passes', 'Line Break', 'Chance Created', 'TDA']
 
     for col in per90:
         df[col] = df.apply(lambda row: (row[col] / row['mins played'] * 990) if row['mins played'] > 0 else 0, axis=1)
