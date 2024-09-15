@@ -167,7 +167,7 @@ def calculatingTeamRating(team, weekly_report, actions, xg):
     #    'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
     #]
     params = [
-        'Opp xG per Shot', 'Progr Regain ', 'Def Actions (Poss Adj)'
+        'Opp xG per Shot', 'Progr Regain ', 'Def Actions (Poss Adj)',
         'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
         'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
     ]
