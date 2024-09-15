@@ -112,7 +112,8 @@ for file in csv_files:
 
     df = df.iloc[start_index:end_index]
     cols_we_want = [
-    'Pass into Oppo Box', 'Progr Regain ',
+    'Pass into Oppo Box', 'Progr Regain ', 'Progr Rec', 'Unprogr Rec', 'Progr Inter', 'Unprogr Inter', 
+    'Stand. Tackle', 'Unsucc Stand. Tackle', 'Tackle', 'Unsucc Tackle',
     'Progr Pass Completion ', 'Success', 'Unsuccess', 'Pass Completion ', 'Progr Pass Attempt ', 
     'Line Break', 'mins played', 'Chance Created', 'Team Name', 'Opposition', 'Match Date', 'Opp Effort on Goal'
     ]
@@ -125,6 +126,8 @@ for file in csv_files:
     df = df[cols_we_want]
 
     df[float_columns] = df[float_columns].astype(float)
+
+    df['TDA'] = df['Progr Rec'] + df['Unprogr Rec'] + df['Progr Inter'] + df['Unprogr Inter'] + df['Tackle'] + df['Unsucc Tackle'] + df['Stand. Tackle'] + df['Unsucc Stand. Tackle']
 
     df['Total Passes'] = df['Success'] + df['Unsuccess']
 
