@@ -306,7 +306,7 @@ if selected_team_3 != 'None':
   final_values = calculatingTeamRating(selected_team_3, weekly_report, actions, xg)
 
 params = [
-    'Opp xG per Shot', 'Progr Regain ', 'Def Actions (Poss Adj)'
+    'Opp xG per Shot', 'Progr Regain ', 'Def Actions (Poss Adj)',
     'Progr Pass Completion ', 'Total Passes', 'Pass Completion ', 'Passes per Min', 'Progr Pass Attempt ', 
     'Line Break', 'Pass into Oppo Box', 'xG per Shot', 'Chance Created'
 ]
