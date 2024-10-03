@@ -83,8 +83,8 @@ def calculatingTeamRating(team, weekly_report, actions, xg):
 
     end.reset_index(drop=True, inplace=True)
 
-    bolts_df = xg[xg['Team'].str.contains('Bolts')]
-    opp_df = xg[~xg['Team'].str.contains('Bolts')]
+    bolts_df = xg[xg['Team'].str.contains(team)]
+    opp_df = xg[~xg['Team'].str.contains(team)]
 
     # Group by the desired columns and aggregate
     bolts_agg = bolts_df.groupby(['Bolts Team', 'Match Date', 'Opposition']).agg(
